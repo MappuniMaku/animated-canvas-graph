@@ -41,7 +41,7 @@ export const clearGraph = (ctx) => {
     ctx.clearRect(padding + 1, padding - 1, CANVAS_SIZES.WIDTH - padding * 2, CANVAS_SIZES.HEIGHT - padding * 2);
 };
 
-export const draw = (ctx, points) => {
+export const drawNewGraphWithPoints = (ctx, points) => {
     clearGraph(ctx);
 
     drawGraph(ctx, points);
