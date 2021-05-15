@@ -1,19 +1,21 @@
-import { drawAxis, drawNewGraphWithPoints } from '@scripts/drawing-utils';
+import { Drawer } from '@scripts/drawer';
 import { getRandomPoints, calculateTargetPoints } from '@scripts/helpers';
 import { ANIMATION_DATA } from '@scripts/constants';
 
 export const initApp = () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
+    const drawer = new Drawer(ctx);
+
     let raf, currentPoints, targetPoints, isAnimationInProgress = false, animationFrame = 1, calculatedCurrentPoints;
 
-    drawAxis(ctx);
+    drawer.drawAxis();
 
     currentPoints = getRandomPoints();
-    drawNewGraphWithPoints(ctx, currentPoints);
+    drawer.drawNewGraphWithPoints(currentPoints);
 
     const animateTransition = () => {
-        drawNewGraphWithPoints(ctx, calculatedCurrentPoints);
+        drawer.drawNewGraphWithPoints(calculatedCurrentPoints);
 
         if (animationFrame > ANIMATION_DATA.FRAMES_COUNT) {
             isAnimationInProgress = false;
@@ -43,7 +45,7 @@ export const initApp = () => {
         calculatedCurrentPoints = calculateTargetPoints(currentPoints, targetPoints);
 
         if (calculatedCurrentPoints === null) {
-            drawNewGraphWithPoints(ctx, targetPoints);
+            drawer.drawNewGraphWithPoints(targetPoints);
             return;
         }
 
