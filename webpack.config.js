@@ -20,8 +20,7 @@ module.exports = {
     resolve: {
         extensions: ['.js'],
         alias: {
-            '@': path.resolve(__dirname, 'src'),
-            '@core': path.resolve(__dirname, 'src/core'),
+            '@scripts': path.resolve(__dirname, 'src/scripts'),
         },
     },
     devtool: 'source-map',
