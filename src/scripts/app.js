@@ -2,8 +2,7 @@ import { Drawer } from '@scripts/drawer';
 import { getRandomPoints, calculateTargetPoints } from '@scripts/helpers';
 import { ANIMATION_DATA } from '@scripts/constants';
 
-export const initApp = () => {
-    const canvas = document.getElementById('canvas');
+export const initApp = (canvas) => {
     const ctx = canvas.getContext('2d');
     const drawer = new Drawer(ctx);
 
