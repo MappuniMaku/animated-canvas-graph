@@ -12,3 +12,9 @@ export const POINTS_DATA = {
 export const ANIMATION_DATA = {
     FRAMES_COUNT: 20,
 };
+
+export const getCanvasSizes = canvas => {
+    CANVAS_SIZES.WIDTH = canvas.offsetWidth;
+    CANVAS_SIZES.HEIGHT = canvas.offsetWidth * 0.625;
+    CANVAS_SIZES.PADDING = canvas.offsetWidth * 0.05;
+};

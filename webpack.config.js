@@ -4,7 +4,7 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const filename = ext => `bundle.[hash].${ext}`;
+const filename = ext => `bundle.[contenthash].${ext}`;
 
 module.exports = {
     context: path.resolve(__dirname, 'src'),

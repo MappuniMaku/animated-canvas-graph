@@ -1,5 +1,6 @@
 import './index.scss';
-import { initApp } from "@scripts/app";
+import { getCanvasSizes } from '@scripts/constants';
+import { initApp } from '@scripts/app';
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
@@ -8,5 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Target canvas element not found');
     }
 
+    getCanvasSizes(canvas);
     initApp(canvas);
 });
