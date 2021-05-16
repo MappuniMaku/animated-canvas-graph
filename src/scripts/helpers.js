@@ -1,9 +1,9 @@
 import { CANVAS_SIZES, POINTS_DATA } from '@scripts/constants';
 
+export const getRandomInt = (min, max) => Math.floor(min + Math.random() * (max + 1 - min));
+
 export const getRandomPoints = () => {
     const padding = CANVAS_SIZES.PADDING * 2;
-
-    const getRandomInt = (min, max) => Math.floor(min + Math.random() * (max + 1 - min));
 
     const pointsNumber = getRandomInt(POINTS_DATA.MIN_NUMBER, POINTS_DATA.MAX_NUMBER);
 
@@ -11,10 +11,10 @@ export const getRandomPoints = () => {
 
     let currentHorizontalCoordinate = padding;
 
-    const resultArr = [];
+    const points = [];
 
     for (let i = 0; i < pointsNumber; i++) {
-        resultArr.push({
+        points.push({
             x: currentHorizontalCoordinate,
             y: getRandomInt(padding, CANVAS_SIZES.HEIGHT - padding),
         });
@@ -22,7 +22,7 @@ export const getRandomPoints = () => {
         currentHorizontalCoordinate += horizontalStep;
     }
 
-    return resultArr;
+    return points;
 };
 
 export const calculateTargetPoints = (currentPoints, targetPoints) => {
@@ -30,7 +30,7 @@ export const calculateTargetPoints = (currentPoints, targetPoints) => {
     const targetPointsNumber = targetPoints.length;
 
     const formCurrentPoint = (currentIndex, targetIndex = currentIndex) => {
-        currentPoints[currentIndex] = {
+        return {
             ...currentPoints[currentIndex],
             currentX: currentPoints[currentIndex].x,
             currentY: currentPoints[currentIndex].y,
@@ -41,7 +41,7 @@ export const calculateTargetPoints = (currentPoints, targetPoints) => {
 
     if (targetPointsNumber === currentPointsNumber) {
         for (let i = 0; i < currentPointsNumber; i++) {
-            formCurrentPoint(i);
+            currentPoints[i] = formCurrentPoint(i);
         }
 
         return currentPoints;
@@ -62,12 +62,12 @@ export const calculateTargetPoints = (currentPoints, targetPoints) => {
                 const centerIndex = unionCenters[i];
 
                 if (i === unionCenters.length - 1) {
-                    formCurrentPoint(centerIndex, i);
+                    currentPoints[centerIndex] = formCurrentPoint(centerIndex, i);
                     break;
                 }
 
                 for (let j = centerIndex; j < unionCenters[i + 1]; j++) {
-                    formCurrentPoint(j, i);
+                    currentPoints[j] = formCurrentPoint(j, i);
                 }
             }
 
@@ -80,34 +80,75 @@ export const calculateTargetPoints = (currentPoints, targetPoints) => {
 
             for (let i = 0; i < currentPointsNumber; i++) {
                 if (i === 0) {
-                    formCurrentPoint(i);
+                    currentPoints[i] = formCurrentPoint(i);
                     continue;
                 }
 
                 if (i === currentPointsNumber - 1) {
-                    formCurrentPoint(i, targetPointsNumber - 1);
+                    currentPoints[i] = formCurrentPoint(i, targetPointsNumber - 1);
                     break;
                 }
 
                 if (isNextPointInUnion) {
                     isNextPointInUnion = false;
-                    formCurrentPoint(i, i - formedUnionsCount);
+                    currentPoints[i] = formCurrentPoint(i, i - formedUnionsCount);
                     continue;
                 }
 
                 if (formedUnionsCount < requiredUnionsNumber) {
-                    formCurrentPoint(i, i - formedUnionsCount);
+                    currentPoints[i] = formCurrentPoint(i, i - formedUnionsCount);
                     formedUnionsCount ++;
                     isNextPointInUnion = true;
                     continue;
                 }
 
-                formCurrentPoint(i, i - formedUnionsCount);
+                currentPoints[i] = formCurrentPoint(i, i - formedUnionsCount);
             }
 
             return currentPoints;
         }
     }
 
-    return null;
+    if (targetPointsNumber > currentPointsNumber) {
+        const pointsNumbersDifferenceRatio = targetPointsNumber / currentPointsNumber;
+        const resultPointsArray = [];
+        let pointsNumbersDifference = targetPointsNumber - currentPointsNumber;
+        let currentTargetIndex = 0;
+
+        if (pointsNumbersDifferenceRatio <= 2) {
+            for (let i = 0; i < currentPointsNumber; i++) {
+                resultPointsArray.push(formCurrentPoint(i, currentTargetIndex));
+                currentTargetIndex++;
+
+                if (pointsNumbersDifference === 0) {
+                    continue;
+                }
+
+                pointsNumbersDifference--;
+                resultPointsArray.push(formCurrentPoint(i, currentTargetIndex));
+                currentTargetIndex++;
+            }
+
+            return resultPointsArray;
+        }
+
+        if (pointsNumbersDifferenceRatio > 2) {
+            let targetPointsCount = targetPointsNumber;
+
+            while (targetPointsCount / currentPointsNumber > 2) {
+                resultPointsArray.push(formCurrentPoint(0, currentTargetIndex));
+                currentTargetIndex++;
+                targetPointsCount--;
+            }
+
+            for (let i = 0; i < currentPointsNumber; i++) {
+                resultPointsArray.push(formCurrentPoint(i, currentTargetIndex));
+                currentTargetIndex++;
+                resultPointsArray.push(formCurrentPoint(i, currentTargetIndex));
+                currentTargetIndex++;
+            }
+
+            return resultPointsArray;
+        }
+    }
 };
